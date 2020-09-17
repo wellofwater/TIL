@@ -132,6 +132,13 @@ $ git commit -m '스프링코드'
 $ git remote add origin {URL}
 ```
 
+- 깃아, 원격(remote)저장소로 추가해줘(add) origin이라는 이름으로 URL을
+- 원격저장소 삭제하기 위해서는 아래의 명령어를 사용한다.
+
+```bash
+$ git remote rm origin
+```
+
 
 
 ### 2. 원격 저장소 확인하기
