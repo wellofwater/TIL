@@ -76,7 +76,7 @@ $ git init
     - 가능하다면 상대적 위치
     - Auto escape image URL when insert
 
-![lib](md-images/lib.png)
+![lib](../md-images/lib.png)
 
 
 
