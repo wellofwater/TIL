@@ -1,4 +1,6 @@
-### CREATE TABLE #1
+## Workshop #1
+
+### CREATE TABLE
 
 ```sql
 CREATE TABLE subway_people(
@@ -18,7 +20,7 @@ STORED AS TEXTFILE;
 
 
 
-### DATA LOAD #1
+### DATA LOAD
 
 ```sql
 LOAD DATA LOCAL INPATH '/root/seoul-subway-people.csv' OVERWRITE INTO TABLE subway_people PARTITION (subwayDay='20200814-20200921');
@@ -28,7 +30,9 @@ LOAD DATA LOCAL INPATH '/root/seoul-subway-people.csv' OVERWRITE INTO TABLE subw
 
 
 
-### CREATE TABLE #2
+## Workshop #2
+
+### CREATE TABLE
 
 ```bash
 CREATE TABLE bus_time(
@@ -97,7 +101,7 @@ STORED AS TEXTFILE;
 
 
 
-### DATA LOAD #2
+### DATA LOAD
 
 ```sql
 LOAD DATA LOCAL INPATH '/root/seoul-bus-time.csv' OVERWRITE INTO TABLE bus_time PARTITION (BusDay='202008');
@@ -107,7 +111,9 @@ LOAD DATA LOCAL INPATH '/root/seoul-bus-time.csv' OVERWRITE INTO TABLE bus_time 
 
 
 
-### CREATE TABLE #3
+## Workshop #3
+
+### CREATE TABLE
 
 ```bash
 CREATE TABLE covid19_patient(
@@ -135,7 +141,7 @@ STORED AS TEXTFILE;
 
 
 
-### DATA LOAD #3
+### DATA LOAD
 
 ```sql
 LOAD DATA LOCAL INPATH '/root/covid19.csv' OVERWRITE INTO TABLE covid19_patient PARTITION (InputDate='20200925');
