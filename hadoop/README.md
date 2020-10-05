@@ -9,5 +9,5 @@
 4. [맵리듀스](04_mapreduce.md)
 5. [하이브](05_hive.md)
 6. [workshop](workshop.md)
-7. [semi-Project](Linux & Big Data System.md)
+7. [semi-Project](linux&big_data_system.md)
 
