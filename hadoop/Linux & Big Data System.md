@@ -314,31 +314,157 @@
    1. 기획
 
       - 집의 전원이 켜지고 꺼질 때를 기록한다
-        1. 위치: 어디의 전원이 켜지고 꺼졌는지
-        2. 어떠한 방식(수동 / 앱이용)을 사용했는지
-        3. 집에 있는 인원은 몇명인지
+        1. 누가: user id
+        2. 위치: 어디의 전원이 켜지고 꺼졌는지
+        3. 상태: on / off
+        4. 방법: 어떠한 방식(수동 / 앱이용)을 사용했는지
+        5. 기타: 집에 있는 인원은 몇명인지
 
    2. 구현
 
-   3. Log
+      - Dynamic Web Project 생성
+
+      - Configure → Convert to Maven Project
+
+      - Spring → Add Spring Project Nature
+
+      - web
+
+        ```java
+        
+        ```
+
+      - Controller
+
+        ```java
+        
+        ```
+
+        
+
+      - Biz
+
+        ```java
+        
+        ```
+
+        
+
+      - Frame
+
+        ```java
+        
+        ```
+
+        
+
+      - Log
+
+        ```java
+        
+        ```
+
+        
+
+   3. FTP 설치
+
+      - tomcat 설치
+
+        ```bash
+        # tomcat
+        cp -r apa(tab) /usr/local
+        ln -s /usr/local/apa(tab)/bin/startup.sh starttomcat
+        ln -s /usr/local/apa(tab)/bin/shutdown.sh stoptomcat
+        cd /usr/local/apa(tab)/conf
+        vi server.xml
+        
+        69 port 8080-> 80
+        ```
+
+        
+
+      - FTP 설치
+
+        ```bash
+        # vsftpd 설치
+        yum -y install vsftpd
+        systemctl restart vsftpd
+        systemctl enable vsftpd
+        
+        # vsft 설정
+        vi /etc/vsftpd/vsftpd.conf
+        19 write_enable=YES # 확인
+        29, 33 # 주석 해제
+        
+        chown ftp.ftp /var/ftp/pub
+        systemctl restart vsftpd
+        
+        # 알드라이브로 ip 접속
+        ```
+
+        
+
+      
+
+   4. Log
 
       - Data Structure
 
-        ```bash
-        CREATE TABLE dataclick(
+        ```sql
+        CREATE TABLE homepower(
         date STRING,
         fn STRING,
         id STRING,
-        item STRING,
-        price INT,
-        age INT,
-        gender STRING
+        switches STRING,
+        power STRING,
+        way STRING,
+        number INT
         )
         PARTITIONED BY (logdate STRING)
         ROW FORMAT DELIMITED
         FIELDS TERMINATED BY ','
         LINES TERMINATED BY '\n'
         STORED AS TEXTFILE;
+        ```
+
+      - log data load
+
+        ```bash
+        # 위치는 root
+        vi hive.sh
+        
+        date=`date`
+        echo $date
+        partitionName="${date:0:4}-${date:6:2}-${date:10:2}"
+        echo $partitionName
+        fileName="data.log.$partitionName"
+        echo $fileName
+        
+        echo "Load the Data ?"
+        read yn
+        
+        
+        if [ $yn == "y" ]
+        then
+        echo "Start Load the Data ..."
+        
+        if [ -f /root/log/$fileName ]
+        then
+        hive << EOF
+        LOAD DATA LOCAL INPATH '/root/log/$fileName' OVERWRITE INTO LOGINFO PARTITION (cDate="$partitionName")
+        EOF
+        echo "OK"
+        echo "OK"
+        else
+        echo "File Not Found"
+        echo "Exit Now..."
+        fi
+        
+        else
+        echo "Exit Now..."
+        
+        fi
+        exit 0
         ```
 
         
