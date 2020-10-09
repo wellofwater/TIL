@@ -190,3 +190,179 @@
   ```
 
   
+
+## 10/06
+
+1. 16,17년 결재 금액의 합과 견수의 합을 테이블에 추가하시오. SUM_AMT, SUM_CNT
+
+   ```R
+   # Q1
+   > r4 <- full_join(y16, y17, by="ID")
+   > r4
+      ID  AMT16 Y16_CNT  SEX AGE AREA   AMT17 Y17_CNT
+   1   1 100000      40    F  50 서울 1300000      50
+   2   2 700000      30    M  40 경기  450000      25
+   3   3  50000       5 <NA>  NA <NA>      NA      NA
+   4   4 125000       3    M  50 서울  400000       8
+   5   5 760000      28    M  27 서울  845000      30
+   6   6 300000       6 <NA>  NA <NA>      NA      NA
+   7   7 130000       2    F  56 경기  150000       2
+   8   8 400000       7    F  47 서울  570000      10
+   9  10 550000      16    F  38 경기  520000      17
+   10  9     NA      NA    M  20 인천  930000       4
+   
+   > r4$SUM_AMT <- rowSums(r4 %>% select(AMT16, AMT17), na.rm = T)
+   > r4$SUM_CNT <- rowSums(r4 %>% select(Y16_CNT, Y17_CNT), na.rm = T)
+   > r4
+      ID  AMT16 Y16_CNT  SEX AGE AREA   AMT17 Y17_CNT SUM_AMT SUM_CNT
+   1   1 100000      40    F  50 서울 1300000      50 1400000      90
+   2   2 700000      30    M  40 경기  450000      25 1150000      55
+   3   3  50000       5 <NA>  NA <NA>      NA      NA   50000       5
+   4   4 125000       3    M  50 서울  400000       8  525000      11
+   5   5 760000      28    M  27 서울  845000      30 1605000      58
+   6   6 300000       6 <NA>  NA <NA>      NA      NA  300000       6
+   7   7 130000       2    F  56 경기  150000       2  280000       4
+   8   8 400000       7    F  47 서울  570000      10  970000      17
+   9  10 550000      16    F  38 경기  520000      17 1070000      33
+   10  9     NA      NA    M  20 인천  930000       4  930000       4
+   ```
+
+   
+
+2. 지역 별 사용금액 평균과 사용 횟수의 평균을 구하시오
+
+   ```R
+   > r5 <- r4 %>% group_by(AREA) %>% summarise(AVG_AMT = mean(SUM_AMT),
+   +                                     		AVG_CNT = mean(SUM_CNT))
+   > r5 <- as.data.frame(r5)
+   > r5$AREA <- ifelse(is.na(r5$AREA),'NONE',r5$AREA)
+   > r5 <- r5 %>% arrange(desc(AVG_AMT))
+   > r5
+     AREA   AVG_AMT  AVG_CNT
+   1 서울 1125000.0 44.00000
+   2 인천  930000.0  4.00000
+   3 경기  833333.3 30.66667
+   4 NONE  175000.0  5.50000
+   ```
+
+   
+   
+3. 연습문제 (150-151p)
+
+   |       | mid_exam |      |      | final_exam |      |      |
+   | ----- | -------- | ---- | ---- | ---------- | ---- | ---- |
+   | CLASS | ID       | MATH | ENG  | ID         | MATH | ENG  |
+   | 1     | 1        | 30   | 40   | 1          | 50   | 50   |
+   | 1     | 2        | 100  | 95   | 2          | 95   | 100  |
+   | 1     | 3        | 95   | 90   | 3          | 80   | 85   |
+   | 1     | 4        | 70   | 80   | 4          | 80   | 80   |
+   | 1     | 5        | 80   | 90   | 5          | 90   | 80   |
+   | 1     | 6        | 85   | 90   | 6          | 70   | 80   |
+   | 1     | 7        | 50   | 70   | 7          | 60   | 80   |
+   | 1     | 8        | 0    | 30   | 9          | 75   | 75   |
+   | 1     | 9        | 60   | 80   | 10         | 90   | 75   |
+   | 1     | 10       | 85   | 85   |            |      |      |
+
+   ```R
+   > library(readxl)
+   > library(dplyr)
+   > library(descr)
+   
+   # 01.
+   > mid_exam <- as.data.frame(read_excel("mid_exam.xlsx"))
+   > mid_exam <- rename(mid_exam, MATH_MID=MATH, ENG_MID=ENG)
+   > mid_exam
+      CLASS ID MATH_MID ENG_MID
+   1      1  1       30      40
+   2      1  2      100      95
+   3      1  3       95      90
+   4      1  4       70      80
+   5      1  5       80      90
+   6      1  6       85      90
+   7      1  7       50      70
+   8      1  8        0      30
+   9      1  9       60      80
+   10     1 10       85      85
+   
+   # 02.
+   > final_exam <- as.data.frame(read_excel("final_exam.xlsx"))
+   > final_exam <- rename(final_exam, MATH_FINAL=MATH, ENG_FINAL=ENG)
+   > final_exam
+     ID MATH_FINAL ENG_FINAL
+   1  1         50        50
+   2  2         95       100
+   3  3         80        85
+   4  4         80        80
+   5  5         90        80
+   6  6         70        80
+   7  7         60        80
+   8  9         75        75
+   9 10         90        75
+   
+   # 03.
+   > total_exam <- inner_join(mid_exam, final_exam, by="ID")
+   > total_exam
+     CLASS ID MATH_MID ENG_MID MATH_FINAL ENG_FINAL
+   1     1  1       30      40         50        50
+   2     1  2      100      95         95       100
+   3     1  3       95      90         80        85
+   4     1  4       70      80         80        80
+   5     1  5       80      90         90        80
+   6     1  6       85      90         70        80
+   7     1  7       50      70         60        80
+   8     1  9       60      80         75        75
+   9     1 10       85      85         90        75
+   
+   # 04.
+   > total_exam$MATH_AVG <- rowMeans(total_exam %>% select(MATH_MID, MATH_FINAL))
+   > total_exam$ENG_AVG <- rowMeans(total_exam %>% select(ENG_MID, ENG_FINAL))
+   > total_exam
+     CLASS ID MATH_MID ENG_MID MATH_FINAL ENG_FINAL MATH_AVG ENG_AVG
+   1     1  1       30      40         50        50     40.0    45.0
+   2     1  2      100      95         95       100     97.5    97.5
+   3     1  3       95      90         80        85     87.5    87.5
+   4     1  4       70      80         80        80     75.0    80.0
+   5     1  5       80      90         90        80     85.0    85.0
+   6     1  6       85      90         70        80     77.5    85.0
+   7     1  7       50      70         60        80     55.0    75.0
+   8     1  9       60      80         75        75     67.5    77.5
+   9     1 10       85      85         90        75     87.5    80.0
+   
+   # 05.
+   > total_exam$TOTAL_AVG <- rowMeans(total_exam %>% select(MATH_MID, MATH_FINAL, ENG_MID, ENG_FINAL))
+   > total_exam
+     CLASS ID MATH_MID ENG_MID MATH_FINAL ENG_FINAL MATH_AVG ENG_AVG TOTAL_AVG
+   1     1  1       30      40         50        50     40.0    45.0     42.50
+   2     1  2      100      95         95       100     97.5    97.5     97.50
+   3     1  3       95      90         80        85     87.5    87.5     87.50
+   4     1  4       70      80         80        80     75.0    80.0     77.50
+   5     1  5       80      90         90        80     85.0    85.0     85.00
+   6     1  6       85      90         70        80     77.5    85.0     81.25
+   7     1  7       50      70         60        80     55.0    75.0     65.00
+   8     1  9       60      80         75        75     67.5    77.5     72.50
+   9     1 10       85      85         90        75     87.5    80.0     83.75
+   
+   # 06.
+   > total_exam %>% summarise(TOTAL_MATH_AVG = mean(MATH_AVG),
+   +                          T0TAL_ENG_AVG = mean(ENG_AVG))
+     TOTAL_MATH_AVG T0TAL_ENG_AVG
+   1       74.72222      79.16667
+   
+   # 07.
+   > total_exam %>% filter(MATH_MID >= 80 & ENG_MID >= 90)
+     CLASS ID MATH_MID ENG_MID MATH_FINAL ENG_FINAL MATH_AVG ENG_AVG TOTAL_AVG
+   1     1  2      100      95         95       100     97.5    97.5     97.50
+   2     1  3       95      90         80        85     87.5    87.5     87.50
+   3     1  5       80      90         90        80     85.0    85.0     85.00
+   4     1  6       85      90         70        80     77.5    85.0     81.25
+   
+   # 08.
+   > boxplot(total_exam$MATH_AVG, total_exam$ENG_AVG)
+   ```
+
+   ![image-20201006164705045](md-images/image-20201006164705045.png)
+
+
+
+
+
