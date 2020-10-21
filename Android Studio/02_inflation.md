@@ -1,12 +1,10 @@
-# 10/15
+# 인플레이션; inflation
 
-> 버튼을 통한 화면 전환
+> 화면의 일부분을 XML 레이아웃 파일 내용으로 적용
 >
-> 로그인 : 프로그래스바
+> `LayoutInflater` 객체의 `inflate(int resource, ViewGroup root)` 메서드 사용
 >
-> 회원가입 : 다이얼로그
->
-> 회원정보 : 정보 수정
+> - inflate(불러올 XML 레이아웃 리소스, 부모 컨테이너) 지정
 
 
 
@@ -34,17 +32,21 @@ public class MainActivity extends AppCompatActivity {
         ProgressDialog progressDialog = null;
 
         if(v.getId() == R.id.button){
+            // 프로그래스 바 생성
             progressDialog = new ProgressDialog(this);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setTitle("login");
             progressDialog.show();
-
-
+            
+            // 이전 화면 지우기
             container.removeAllViews();
+            
+            // LayoutInflater 객체 참조
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            // 전환할 레이아웃 설정
             inflater.inflate(R.layout.login, container, true);
 
-
+            // 회원정보를 가져와 TextView에 출력
             TextView textViewId = container.findViewById(R.id.textViewID);
             TextView textViewPwd = container.findViewById(R.id.textViewPwd);
             TextView textViewName = container.findViewById(R.id.textViewName);
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
             textViewName.setText(strName);
             textViewEmail.setText(strEmail);
         }else if(v.getId() == R.id.button2){
+            // 대화상자(다이얼로그) 생성
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Sign up");
             builder.setMessage("가입하시겠습니까?");
@@ -76,10 +79,17 @@ public class MainActivity extends AppCompatActivity {
 
             AlertDialog dialog = builder.create();
             dialog.show();
+            // 화면 전환 없음
         }else if (v.getId() == R.id.button3){
+            // 이전 화면 지우기
             container.removeAllViews();
+            
+            // LayoutInflater 객체 참조
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            // 전환할 레이아웃 설정
             inflater.inflate(R.layout.userinfo, container, true);
+            
+            // 기존 회원정보를 EditText에 입력
             EditText updateId = container.findViewById(R.id.updateId);
             EditText updatePwd = container.findViewById(R.id.updatePwd);
             EditText updateName = container.findViewById(R.id.updateName);
@@ -89,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             updateName.setText(strName);
             updateEmail.setText(strEmail);
         }else if (v.getId() == R.id.button4){
+            // EditText의 입력 정보를 저장
             EditText updateId = container.findViewById(R.id.updateId);
             EditText updatePwd = container.findViewById(R.id.updatePwd);
             EditText updateName = container.findViewById(R.id.updateName);
@@ -98,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
             strName = updateName.getText().toString();
             strEmail = updateEmail.getText().toString();
             Toast.makeText(this, "Update Complete!", Toast.LENGTH_SHORT).show();
-        }else if(v.getId() == R.id.button6){
         }
     }
 ```

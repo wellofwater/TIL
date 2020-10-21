@@ -1,4 +1,4 @@
-# 10/19
+# 웹 서버 데이터 전송
 
 > 로그인 후, 다음 페이지로 이동
 >
@@ -537,6 +537,8 @@
     //                list.add(movie);
     //            }
                 tx_term.setText(term);
+                
+                // 리스트에 어댑터 설정
                 ItemAdapter itemAdapter = new ItemAdapter();
                 listView.setAdapter(itemAdapter);
             }
